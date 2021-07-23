@@ -13,6 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# The Bazel Java SDK and Bazel Eclipse projects use the aspect developed for the
+# IntelliJ plugin.
+
+# LAST COPY FROM IJ:
+#   July 22 2021 21112c7901c7e4cbdd9e06d541f4fb5c121af76a
+
 """Bazel-specific intellij aspect."""
 
 load(
@@ -27,7 +33,7 @@ EXTRA_DEPS = [
 
 def tool_label(tool_name):
     """Returns a label that points to a tool target in the bundled aspect workspace."""
-    return Label("//:" + tool_name + "_bin")
+    return Label("//aspect/tools:" + tool_name)
 
 def get_go_import_path(ctx):
     """Returns the import path for a go target."""
@@ -62,10 +68,10 @@ semantics = struct(
     py = struct(
         get_launcher = get_py_launcher,
     ),
-    flag_hack_label = "//:flag_hack",
+    flag_hack_label = "//aspect:flag_hack",
 )
 
 def _aspect_impl(target, ctx):
     return intellij_info_aspect_impl(target, ctx, semantics)
 
-bzleclipse_aspect = make_intellij_info_aspect(_aspect_impl, semantics)
+bzljavasdk_aspect = make_intellij_info_aspect(_aspect_impl, semantics)

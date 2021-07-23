@@ -1,17 +1,3 @@
-# Copyright 2017 The Bazel Authors. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 """An aspect to gather info needed by the FastBuildService."""
 
 load(
@@ -49,8 +35,14 @@ def _fast_build_info_impl(target, ctx):
         ]
 
     if hasattr(target, "java_toolchain"):
-        write_output = True
         toolchain = target.java_toolchain
+    elif java_common.JavaToolchainInfo != platform_common.ToolchainInfo and \
+         java_common.JavaToolchainInfo in target:
+        toolchain = target[java_common.JavaToolchainInfo]
+    else:
+        toolchain = None
+    if toolchain:
+        write_output = True
         javac_jars = []
         if hasattr(toolchain, "tools"):
             javac_jars = [artifact_location(f) for f in toolchain.tools.to_list()]
