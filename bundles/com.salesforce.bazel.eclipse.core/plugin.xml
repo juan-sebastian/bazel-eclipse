@@ -221,4 +221,12 @@
             name="ProjectView">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.jdt.ui.classpathFixProcessors">
+      <classpathFixProcessor
+            class="com.salesforce.bazel.eclipse.classpath.BazelClasspathFixProcessor"
+            id="com.salesforce.bazel.eclipse.core.bazelClasspathFixProcessor"
+            name="BazelClasspathFixProcessor">
+      </classpathFixProcessor>
+   </extension>
 </plugin>
