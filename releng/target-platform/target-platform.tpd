@@ -2,7 +2,10 @@ target "bazel-eclipse-feature-target-platform" with source configurePhase requir
 
 environment JavaSE-11
 
-location "https://download.eclipse.org/eclipse/updates/4.21/R-4.21-202109060500/" {
+// Eclipse Platform
+// Eclipse JDT (dictated by JDT LS)
+location "https://download.eclipse.org/eclipse/updates/4.22-I-builds/I20211116-1800/" {
+//location "https://download.eclipse.org/eclipse/updates/4.21/R-4.21-202109060500/" {
     org.eclipse.e4.rcp.feature.group
     org.eclipse.ecf.core.feature.feature.group
     org.eclipse.ecf.core.ssl.feature.feature.group
@@ -13,23 +16,24 @@ location "https://download.eclipse.org/eclipse/updates/4.21/R-4.21-202109060500/
     org.eclipse.emf.ecore.feature.group
     org.eclipse.equinox.core.feature.feature.group
     org.eclipse.equinox.core.sdk.feature.group
-    org.eclipse.equinox.p2.core.feature.source.feature.group
-    org.eclipse.equinox.sdk.feature.group
-    org.eclipse.equinox.p2.discovery.feature.feature.group
-    org.eclipse.rcp.feature.group
-    org.eclipse.rcp.sdk.id
-    org.eclipse.sdk.ide
-    org.eclipse.test.feature.group
     org.eclipse.equinox.executable
     org.eclipse.equinox.executable.feature.group
-    org.eclipse.jdt.feature.group
-    org.eclipse.platform.feature.group
-    org.eclipse.test
+    org.eclipse.equinox.p2.core.feature.source.feature.group
+    org.eclipse.equinox.p2.discovery.feature.feature.group
+    org.eclipse.equinox.sdk.feature.group
+	org.eclipse.jdt.feature.group
     org.eclipse.jface.text.tests
-    org.eclipse.text.tests
+    org.eclipse.platform.feature.group
+    org.eclipse.rcp.feature.group
+    org.eclipse.rcp.sdk.id
     org.eclipse.sdk.feature.group
+    org.eclipse.sdk.ide
+    org.eclipse.test.feature.group
+    org.eclipse.test
+    org.eclipse.text.tests
 }
 
+// Orbit third-party jars
 location "https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository/" {
 	com.google.gson
 	com.google.guava
@@ -46,8 +50,10 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R202108252228
 	javax.xml.soap
 }
 
-location "https://download.eclipse.org/jdtls/milestones/1.4.0/repository/" {
-	org.eclipse.jdt.ls.core
+// Eclipse JDT LS
+//location "https://download.eclipse.org/jdtls/milestones/1.5.0/repository/" {
+location "https://download.eclipse.org/jdtls/snapshots/repository/latest/" {
+	org.eclipse.jdt.ls.core lazy
 }
 
 // locations below taken from eclipse.jdt.ls project (to allow building the JDT LS in same workspace)
@@ -66,7 +72,7 @@ location "https://download.eclipse.org/lsp4j/updates/releases/0.12.0/" {
 	org.eclipse.lsp4j.sdk.feature.group
 }
 
-location "https://download.eclipse.org/technology/m2e/releases/1.18.1/" {
+location "https://download.eclipse.org/technology/m2e/releases/1.18.2/" {
 	org.eclipse.m2e.feature.feature.group
 	org.eclipse.m2e.logback.feature.feature.group
 	org.eclipse.m2e.sdk.feature.feature.group
