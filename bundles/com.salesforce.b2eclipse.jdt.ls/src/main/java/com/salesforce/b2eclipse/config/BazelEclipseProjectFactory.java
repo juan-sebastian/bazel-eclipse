@@ -103,6 +103,8 @@ public final class BazelEclipseProjectFactory {
             BazelWorkspaceScanner.getBazelWorkspaceName(bazelWorkspaceRoot), bazelWorkspaceRootDirectory);
 
         BazelBuildSupport.calculateExcludedFilePatterns(bazelWorkspaceRootDirectory.getAbsolutePath());
+        LOG.debug("workspaceRootPackage: " + workspaceRootPackage.getWorkspaceRootDirectory());
+        selectedBazelPackages.stream().forEach((l) -> LOG.debug("selectedBazelPackage: " + l.getBazelPackageFSRelativePath()));
 
         ProjectImporterFactory projectImporterFactory =
                 new ProjectImporterFactory(workspaceRootPackage, selectedBazelPackages);

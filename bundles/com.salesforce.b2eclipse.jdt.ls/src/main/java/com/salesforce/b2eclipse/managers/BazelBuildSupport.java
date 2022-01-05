@@ -37,7 +37,30 @@ public class BazelBuildSupport implements IBuildSupport {
     private static final List<String> WATCH_FILE_PATTERNS = Arrays.asList("**/" + BUILD_FILE_NAME,
         "**/" + WORKSPACE_FILE_NAME, "**/*" + BAZELPROJECT_FILE_NAME_SUFIX, "**/*" + BAZEL_FILE_NAME_SUFIX);
     private static final String BUILD_TOOL_NAME = "Bazel";
-    private static final List<String> EXCLUDED_FILE_PATTERN = Arrays.asList("/bazel-*/**");
+    private static final List<String> EXCLUDED_FILE_PATTERN = Arrays.asList(
+            "**/.git/**",
+            "**/node_modules/**",
+            "**/.metadata/**",
+            "**/archetype-resources/**",
+            "**/META-INF/maven/**",
+            "**/.idea/**",
+            "**/.code/**",
+            "**/.vscode/**",
+            "**/.ijwb/**",
+            "**/airy_dev/**",
+            "**/dist/**",
+            "**/bazel-*/**",
+            "**/.terraform/**",
+            "**/.DS_Store/**",
+            "/cli/**",
+            "/docs/**",
+            "/frontend/**",
+            "/infrastructure/**",
+            "/integration/**",
+            "/lib/go/**",
+            "/lib/typescript/**",
+            "/scripts/**",
+            "/tools/**");
 
     private static List<String> calculatedExcludedFilePatterns = new ArrayList<>();
 
@@ -165,9 +188,13 @@ public class BazelBuildSupport implements IBuildSupport {
     public static void calculateExcludedFilePatterns(String bazelWorkspaceRootDirectoryPath) {
         if (calculatedExcludedFilePatterns.isEmpty()) {
 
-            EXCLUDED_FILE_PATTERN.stream().map(path -> StringUtils.join("**" + bazelWorkspaceRootDirectoryPath, path))
-                    .forEach(calculatedExcludedFilePatterns::add);
-
+            EXCLUDED_FILE_PATTERN.stream().map((path)-> {
+                if (path.charAt(0) != '*') {
+                    return StringUtils.join(bazelWorkspaceRootDirectoryPath, path);
+                }
+                return path;
+            }).forEach(calculatedExcludedFilePatterns::add);
+            LOG.debug("calculatedExcludedFilePatterns: " + calculatedExcludedFilePatterns.toString());
         }
     }
 

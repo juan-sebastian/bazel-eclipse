@@ -70,6 +70,7 @@ public class BazelPackageFinder {
             List<Path> buildFiles = new ArrayList<>(1000);
 
             Path start = dir.toPath();
+            logger.debug("[BazelPackageFinder] Path: " + start.toString());
             Files.walkFileTree(start, new FileVisitor<Path>() {
 
                 @Override

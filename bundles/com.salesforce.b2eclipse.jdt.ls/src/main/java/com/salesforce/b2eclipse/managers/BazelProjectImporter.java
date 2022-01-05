@@ -100,6 +100,7 @@ public final class BazelProjectImporter extends AbstractProjectImporter {
 			List<BazelPackageLocation> bazelPackagesToImport = allBazelPackages;
 
 			File targetsFile = new File(rootFolder, BazelBuildSupport.BAZELPROJECT_FILE_NAME_SUFIX);
+            LOG.debug("targetsFile: " + targetsFile.toString());
 
 			if (targetsFile.exists()) {
 				ProjectView projectView = new ProjectView(rootFolder, readFile(targetsFile.getPath()));

@@ -40,14 +40,17 @@ public class BjlsSetupClasspathContainersFlow extends SetupClasspathContainersFl
     public BjlsSetupClasspathContainersFlow(BazelCommandManager commandManager, BazelProjectManager projectManager,
             ResourceHelper resourceHelper, JavaCoreHelper javaCoreHelper) {
         super(commandManager, projectManager, resourceHelper, javaCoreHelper);
+        LOG.setLevel(0);
     }
 
     @Override
     public void run(ImportContext ctx, SubMonitor progressSubMonitor) throws CoreException {
         Path bazelWorkspaceRootDirectory = new Path(ctx.getBazelWorkspaceRootDirectory().getAbsolutePath());
         List<IProject> importedProjects = ctx.getImportedProjects();
+        LOG.debug("bazelWorkspaceRootDirectory", bazelWorkspaceRootDirectory.toString());
         for (IProject project : importedProjects) {
             BazelPackageLocation packageLocation = ctx.getPackageLocationForProject(project);
+            LOG.debug("packageLocation: " + packageLocation.getBazelPackageFSRelativePath());
             ProjectStructure structure =
                     ctx.getProjectStructure(packageLocation, getBazelWorkspace(), getCommandManager());
             String packageFSPath = packageLocation.getBazelPackageFSRelativePath();
@@ -63,6 +66,7 @@ public class BjlsSetupClasspathContainersFlow extends SetupClasspathContainersFl
             buildBinLinks(ctx, javaProject);
 
             progressSubMonitor.worked(1);
+            LOG.debug("packageLocation finished: " + packageLocation.getBazelPackageFSRelativePath());
         }
     }
 

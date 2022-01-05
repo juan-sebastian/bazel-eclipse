@@ -63,6 +63,7 @@ public class FlowProjectImporter implements ProjectImporter {
         this.projectOrderResolver = Objects.requireNonNull(projectOrderResolver);
         this.executablePath = Objects.requireNonNull(executablePath);
         this.importInProgress = Objects.requireNonNull(importInProgress);
+        LOG.setLevel(0);
     }
 
     public BazelPackageLocation getBazelWorkspaceRootPackageInfo() {
@@ -98,6 +99,7 @@ public class FlowProjectImporter implements ProjectImporter {
             throw new IllegalStateException("Cannot start the import because there is no configured Bazel executable. "
                     + "Please configure the Bazel executable in the Eclipse preferences.");
         }
+        LOG.debug("Start run importer");
 
         ImportContext ctx = createFlowContext();
 
@@ -116,14 +118,18 @@ public class FlowProjectImporter implements ProjectImporter {
 
     private void runFlows(ImportContext ctx, IProgressMonitor progressMonitor) {
         SubMonitor subMonitor = SubMonitor.convert(progressMonitor, flows.length);
+        LOG.debug("runFlow flow length: " + flows.length);
         for (int i = 0; i < flows.length; i++) {
             ImportFlow flow = flows[i];
             long startTimeMillis = System.currentTimeMillis();
             flow.assertContextState(ctx);
             try {
+                LOG.debug("flow ProgressTest: " + flow.getProgressText());
+                LOG.debug("flow ProgressTest Class type: " + flow.getClass());
                 subMonitor.setTaskName(flow.getProgressText());
                 subMonitor.setWorkRemaining((flows.length - i) + flow.getTotalWorkTicks(ctx));
                 flow.run(ctx, subMonitor);
+                LOG.debug("flow ProgressTest Finished: " + flow.getProgressText());
                 subMonitor.worked(1);
             } catch (RuntimeException runE) {
                 LOG.error("Failure during import", runE);
