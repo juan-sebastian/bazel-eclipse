@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2020, Salesforce.com, Inc. All rights reserved.
+ * Copyright (c) 2022, Salesforce.com, Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  * following conditions are met:
@@ -20,7 +20,7 @@
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * Copyright 2016 The Bazel Authors. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
@@ -33,48 +33,28 @@
  * specific language governing permissions and limitations under the License.
  *
  */
+package com.salesforce.bazel.eclipse.classpath;
 
-package com.salesforce.bazel.eclipse;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IJavaProject;
 
 /**
- * Project nature for Bazel Eclipse plugin.
+ * This is just a wrapper around the BazelClasspathContainerInitializer. This is done to ensure activation of the
+ * Bazel Core Eclipse plugin before this initializer is used. This is required because the Core plugin initilizes a
+ * set of collaborators that are used by the initializer.
+ * <p>
+ * By placing the BazelCoreClasspathContainerInitializer in the Bazel Core plugin, this ensures that the Core plugin
+ * is activated on first use. The BazelClasspathContainerInitializer is in the Bazel Common plugin. Without this wrapper
+ * the Common plugin would be activated but not the Core plugin on first use.
+ * <p>
+ * The use case where this matters is when you: 1. create a new Eclipse workspace 2. import a Bazel workspace 
+ * 3. close Eclipse 4. launch Eclipse and open the existing Eclipse workspace
  */
-public class BazelNature implements IProjectNature {
-    public static final String BAZEL_NATURE_ID = "com.salesforce.bazel.eclipse.bazelNature"; //$NON-NLS-1$
-    private IProject project;
-
-    /**
-     * We create a special Eclipse project to represent the Bazel workspace. This is the base name of the project. The
-     * actual name of the workspace is added to this string, like "Bazel Workspace (acme)"
-     */
-    public static final String BAZELWORKSPACE_PROJECT_BASENAME = "Bazel Workspace";
-
-    public static String getEclipseRootProjectName(String bazelWorkspaceName) {
-        return BazelNature.BAZELWORKSPACE_PROJECT_BASENAME + " (" + bazelWorkspaceName + ")";
-    }
-    
-    @Override
-    public void configure() throws CoreException {
-        // TODO we aren't doing anything right now for BazelNature configure hook, seems like it should be used for something
-        //BazelPluginActivator.info("BazelNature configure hook called.");
-    }
+public class BazelCoreClasspathContainerInitializer extends BazelClasspathContainerInitializer {
 
     @Override
-    public void deconfigure() throws CoreException {
-
-    }
-
-    @Override
-    public IProject getProject() {
-        return project;
-    }
-
-    @Override
-    public void setProject(IProject project) {
-        this.project = project;
+    public void initialize(IPath eclipseProjectPath, IJavaProject eclipseJavaProject) throws CoreException {
+        super.initialize(eclipseProjectPath, eclipseJavaProject);
     }
 }

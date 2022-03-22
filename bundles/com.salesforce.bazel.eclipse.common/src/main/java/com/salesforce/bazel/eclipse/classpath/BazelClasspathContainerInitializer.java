@@ -50,6 +50,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
 import org.osgi.service.prefs.BackingStoreException;
 
+import com.salesforce.bazel.eclipse.BazelNature;
 import com.salesforce.bazel.eclipse.component.ComponentContext;
 import com.salesforce.bazel.eclipse.project.EclipseProjectUtils;
 import com.salesforce.bazel.eclipse.runtime.api.JavaCoreHelper;
@@ -72,22 +73,35 @@ public class BazelClasspathContainerInitializer extends ClasspathContainerInitia
     @Override
     public void initialize(IPath eclipseProjectPath, IJavaProject eclipseJavaProject) throws CoreException {
         IProject eclipseProject = eclipseJavaProject.getProject();
+        String eclipseProjectName = eclipseProject.getName();
         try {
             //remove projects added to the workspace after a corrupted package in identified
             if (isCorrupt.get()) {
                 undo(eclipseJavaProject.getProject());
                 return;
             }
+            
+            // ComponentContext is a lightweight wireup facility for collaborators; since we rely on it 
+            // we verify the status here because our initialize() method gets invoked early in the plugin 
+            // lifecycle and we want to verify plugin activation happened as expected
+            ComponentContext context = ComponentContext.getInstance();
+            if (!context.isInitialized()) {
+                String message = "Failure initializing Bazel classpath container for project "+eclipseProjectName+" because the "
+                        + "internal ComponentContext has not been initialized yet. This is typically a problem due to activation "+
+                        "of a plugin not happening which is an internal tooling bug. Please report it to the tool owners.";
+                LOG.error(message);
+                throw new IllegalStateException(message);
+            }
 
             // create the BazelProject if necessary
-            BazelProjectManager bazelProjectManager = ComponentContext.getInstance().getProjectManager();
-            BazelProject bazelProject = bazelProjectManager.getProject(eclipseProject.getName());
+            BazelProjectManager bazelProjectManager = context.getProjectManager();
+            BazelProject bazelProject = bazelProjectManager.getProject(eclipseProjectName);
             if (bazelProject == null) {
                 bazelProject = new BazelProject(eclipseProject.getName(), eclipseProject);
                 bazelProjectManager.addProject(bazelProject);
             }
 
-            boolean isRootProject = eclipseJavaProject.getProject().getName().contains("Bazel Workspace");
+            boolean isRootProject = eclipseJavaProject.getProject().getName().contains(BazelNature.BAZELWORKSPACE_PROJECT_BASENAME);
             IClasspathContainer container = getClasspathContainer(eclipseProject, isRootProject);
 
             if (isRootProject) {
@@ -95,10 +109,16 @@ public class BazelClasspathContainerInitializer extends ClasspathContainerInitia
             } else {
                 setClasspathContainerForProject(eclipseProjectPath, eclipseJavaProject, container);
             }
-        } catch (IOException | InterruptedException | BackingStoreException e) {
-            LOG.error("Error while creating Bazel classpath container.", e);
         } catch (BazelCommandLineToolConfigurationException e) {
-            LOG.error("Bazel not found: " + e.getMessage());
+            String message = "Error while initializing Bazel classpath container for project "+eclipseProjectName+
+                    " because the Bazel executable failed invocation. Root cause: "+e.getMessage();
+            LOG.error(message, e);
+            throw new IllegalStateException(message);
+        } catch (Exception anyE) {
+            String message = "Error while initializing Bazel classpath container for project "+eclipseProjectName+
+                    ". Root cause: "+anyE.getMessage();
+            LOG.error(message, anyE);
+            throw new IllegalStateException(message);
         }
     }
 
