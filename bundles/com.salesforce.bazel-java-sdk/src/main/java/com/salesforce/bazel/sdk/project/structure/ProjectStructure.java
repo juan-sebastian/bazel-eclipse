@@ -101,29 +101,32 @@ public class ProjectStructure {
      * meaningful data, else the olderStructure data will be used for that element.
      */
     public void merge(ProjectStructure olderStructure) {
-        if (olderStructure == null) {
-            return;
-        }
-        if (mainSourceDirFSPaths.size() > 0) {
-            olderStructure.mainSourceDirFSPaths = mainSourceDirFSPaths;
-        } else {
-            mainSourceDirFSPaths = olderStructure.mainSourceDirFSPaths;
-        }
-        if (mainResourceDirFSPaths.size() > 0) {
-            olderStructure.mainResourceDirFSPaths = mainResourceDirFSPaths;
-        } else {
-            mainResourceDirFSPaths = olderStructure.mainResourceDirFSPaths;
-        }
-        if (testSourceDirFSPaths.size() > 0) {
-            olderStructure.testSourceDirFSPaths = testSourceDirFSPaths;
-        } else {
-            testSourceDirFSPaths = olderStructure.testSourceDirFSPaths;
-        }
-        if (testResourceDirFSPaths.size() > 0) {
-            olderStructure.testResourceDirFSPaths = testResourceDirFSPaths;
-        } else {
-            testResourceDirFSPaths = olderStructure.testResourceDirFSPaths;
-        }
+        return;
+        /*
+         *if (olderStructure == null) {
+         *    return;
+         *}
+         *if (mainSourceDirFSPaths.size() > 0) {
+         *    olderStructure.mainSourceDirFSPaths = mainSourceDirFSPaths;
+         *} else {
+         *    mainSourceDirFSPaths = olderStructure.mainSourceDirFSPaths;
+         *}
+         *if (mainResourceDirFSPaths.size() > 0) {
+         *    olderStructure.mainResourceDirFSPaths = mainResourceDirFSPaths;
+         *} else {
+         *    mainResourceDirFSPaths = olderStructure.mainResourceDirFSPaths;
+         *}
+         *if (testSourceDirFSPaths.size() > 0) {
+         *    olderStructure.testSourceDirFSPaths = testSourceDirFSPaths;
+         *} else {
+         *    testSourceDirFSPaths = olderStructure.testSourceDirFSPaths;
+         *}
+         *if (testResourceDirFSPaths.size() > 0) {
+         *    olderStructure.testResourceDirFSPaths = testResourceDirFSPaths;
+         *} else {
+         *    testResourceDirFSPaths = olderStructure.testResourceDirFSPaths;
+         *}
+         */
     }
 
     // DEPRECATED
