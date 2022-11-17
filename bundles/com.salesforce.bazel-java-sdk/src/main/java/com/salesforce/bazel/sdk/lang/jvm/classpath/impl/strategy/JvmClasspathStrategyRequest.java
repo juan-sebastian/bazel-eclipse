@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2020, Salesforce.com, Inc. All rights reserved.
+ * Copyright (c) 2022, Salesforce.com, Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  * following conditions are met:
@@ -20,35 +20,36 @@
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
- *
  */
-package com.salesforce.bazel.sdk.lang.jvm;
+package com.salesforce.bazel.sdk.lang.jvm.classpath.impl.strategy;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
+import com.salesforce.bazel.sdk.lang.jvm.classpath.JvmClasspathData;
+import com.salesforce.bazel.sdk.model.BazelTargetKind;
 import com.salesforce.bazel.sdk.project.BazelProject;
+import com.salesforce.bazel.sdk.project.BazelProjectTargets;
 
-public class BazelJvmClasspathResponse {
-    /**
-     * The jvm classpath entries (e.g. jar files)
-     */
-    public JvmClasspathEntry[] jvmClasspathEntries = new JvmClasspathEntry[] {};
+/**
+ * Value object that contains the passed collaborators to the getClasspath strategy method.
+ * By wrapping these objects, we can add to them over time without breaking existing strategies.
+ */
+public class JvmClasspathStrategyRequest {
+    public BazelProject bazelProject;
+    public String targetLabel; // TODO switch to BazelLabel
+    public BazelTargetKind targetKind; // TODO switch to kind
+    public BazelProjectTargets configuredTargetsForProject;
+    public Set<String> actualActivatedTargets;
+    public  JvmClasspathData classpathData;
 
-    /**
-     * The list of projects that should be added to the classpath, if this environment is using project support. The
-     * caller is expected to invoke the following: bazelProjectManager.setProjectReferences(bazelProject,
-     * computedClasspath.classpathProjectReferences); But due to locking in some environments, this may need to be
-     * delayed.
-     */
-    public List<BazelProject> classpathProjectReferences = new ArrayList<>();
+    public JvmClasspathStrategyRequest(BazelProject bazelProject, String targetLabel, BazelTargetKind targetKind,
+            BazelProjectTargets configuredTargetsForProject, Set<String> actualActivatedTargets,
+            JvmClasspathData classpathData) {
+        this.bazelProject = bazelProject;
+        this.targetLabel = targetLabel;
+        this.targetKind = targetKind;
+        this.configuredTargetsForProject = configuredTargetsForProject;
+        this.actualActivatedTargets = actualActivatedTargets;
+        this.classpathData = classpathData;
+    }    
 }

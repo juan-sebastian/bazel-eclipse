@@ -37,6 +37,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import com.salesforce.bazel.sdk.lang.jvm.classpath.impl.util.TestClasspathHelper;
 import com.salesforce.bazel.sdk.path.FSPathHelper;
 
 public class BazelJvmTestClasspathHelperTest {
@@ -44,7 +45,7 @@ public class BazelJvmTestClasspathHelperTest {
     @Rule
     public TemporaryFolder tmpDir = new TemporaryFolder();
 
-    BazelJvmTestClasspathHelper bazelJvmTestClasspathHelper = new BazelJvmTestClasspathHelper();
+    TestClasspathHelper bazelJvmTestClasspathHelper = new TestClasspathHelper();
 
     @Test
     public void getPathsToJars() {
@@ -80,7 +81,7 @@ public class BazelJvmTestClasspathHelperTest {
 
     @Test
     public void testClasspathAggregation() throws Exception {
-        BazelJvmTestClasspathHelper.ParamFileResult result = new BazelJvmTestClasspathHelper.ParamFileResult();
+        TestClasspathHelper.ParamFileResult result = new TestClasspathHelper.ParamFileResult();
         result.paramFiles = new ArrayList<>();
         result.unrunnableLabels = new TreeSet<>();
         File tdir = tmpDir.newFolder("paramFiles");
