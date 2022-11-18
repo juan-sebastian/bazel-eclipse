@@ -109,7 +109,7 @@ public final class EclipseSourceClasspathUtil {
         startTimeMS = System.currentTimeMillis();
         IClasspathEntry bazelClasspathContainerEntry =
                 javaCoreHelper.newContainerEntry(new Path(IClasspathContainerConstants.CONTAINER_NAME));
-        classpathEntries.add(bazelClasspathContainerEntry);
+        //classpathEntries.add(bazelClasspathContainerEntry);
 
         // add in a JDK to the classpath
         String jdk;
